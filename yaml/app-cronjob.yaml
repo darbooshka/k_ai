@@ -1,20 +1,15 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
-  name: gsutil-sync-job
+  name: hello-world-cronjob
 spec:
-  template:
+  schedule: "*/5 * * * *"
+  jobTemplate:
     spec:
-      containers:
-      - name: gsutil-sync
-        image: google/cloud-sdk:275.0.0-alpine
-        command: ["gsutil", "-m", "rsync", "-dr", "gs://glow-sportradar/", "/data/input"]
-        volumeMounts:
-        - name: glow-data-disk
-          mountPath: /data
-      restartPolicy: Never
-      volumes:
-      - name: glow-data-disk
-        gcePersistentDisk:
-          pdName: glow-data-disk-200
-  backoffLimit: 0
+      template:
+        spec:
+          containers:
+            - name: hello-world
+              image: bash
+              command: ["echo", "Hello world"]
+          restartPolicy: OnFailure
