@@ -1,15 +1,23 @@
-apiVersion: batch/v1beta1
-kind: CronJob
+apiVersion: v1
+kind: Pod
 metadata:
-  name: hello-world-cronjob
+  name: my-pod
 spec:
-  schedule: "*/5 * * * *"
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-            - name: hello-world
-              image: bash
-              command: ["echo", "Hello world"]
-          restartPolicy: OnFailure
+  containers:
+  - name: my-container
+    image: my-image
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 8080
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+    volumeMounts:
+    - name: my-data
+      mountPath: /data
+  volumes:
+  - name: my-data
+    hostPath:
+      path: /var/lib/app
