@@ -1,17 +1,20 @@
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: nginx-date-pod
+  name: gsutil-sync-job
 spec:
-  containers:
-  - name: nginx
-    image: nginx
-  - name: date
-    image: busybox
-    command: ["sh", "-c", "while true; do date >> /html/index.html; sleep 1; done"]
-  volumeMounts:
-  - name: html
-    mountPath: /html
-  volumes:
-  - name: html
-    emptyDir: {}
+  template:
+    spec:
+      containers:
+      - name: gsutil-sync
+        image: google/cloud-sdk:275.0.0-alpine
+        command: ["gsutil", "-m", "rsync", "-dr", "gs://glow-sportradar/", "/data/input"]
+        volumeMounts:
+        - name: glow-data-disk
+          mountPath: /data
+      restartPolicy: Never
+      volumes:
+      - name: glow-data-disk
+        gcePersistentDisk:
+          pdName: glow-data-disk-200
+  backoffLimit: 0
