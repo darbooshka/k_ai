@@ -1,23 +1,16 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: my-pod
+  name: my-pod
 spec:
-  containers:
-  - name: my-container
-    image: my-image
-    livenessProbe:
-      httpGet:
-        path: /health
-        port: 8080
-    readinessProbe:
-      httpGet:
-        path: /ready
-        port: 8080
-    volumeMounts:
-    - name: my-data
-      mountPath: /data
-  volumes:
-  - name: my-data
-    hostPath:
-      path: /var/lib/app
+  containers:
+  - name: my-container
+    image: my-image
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 8000
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8000
